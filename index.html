@@ -72,9 +72,9 @@
 </style>
 
 <div id="container">
-    <div id="text" contenteditable>
+    <section id="text" contenteditable>
         <p>Напишите свое письмо...</p>
-    </div>
+    </section>
 </div>
 
 <script>
@@ -82,14 +82,36 @@
     var selectedElement = null;
     var textBlock = document.getElementById('text');
 
+    function supportsLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+
     function setFocus() {
         if (selectedElement) {
-            selectedElement.style.color = '#cfcfcf';
+            selectedElement.style.color = '';
         }
 
+        // фокус на параграфе
         selectedElement = window.getSelection().focusNode.parentNode;
         selectedElement.style.color = '#424242';
+
+        // запоминаем текст
+        if (supportsLocalStorage) {
+            localStorage['text'] = textBlock.innerHTML;
+        }
     }
+
+    window.onload = function () {
+
+        // загружаем текст
+        if (supportsLocalStorage) {
+            textBlock.innerHTML = localStorage['text'].replace('color: rgb(66, 66, 66);','');
+        }
+    };
 
     textBlock.onkeyup = setFocus;
     textBlock.onmouseup = setFocus;
