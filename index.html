@@ -46,11 +46,14 @@
     html, body, #container {
         min-height: 100%;
     }
+    #container {
+        position: relative;
+    }
     p {
         margin-bottom: 20px;
     }
     #text {
-        font: 16px Georgia, Arial;
+        font: 16px Georgia, Arial, sans-serif;
         line-height: 30px;
         outline: none;
         color: #cfcfcf !important;
@@ -61,6 +64,76 @@
     #text * {
         -webkit-transition: color 2s;
         transition: color 2s;
+    }
+    .mail-icon {
+        position: relative;
+        left: 50%;
+        bottom: 0;
+        -webkit-transform: translateX(-50%);
+        transform: translateX(-50%);
+        width: 50px;
+        opacity: 0.2;
+        cursor: pointer;
+        -webkit-transition: opacity .5s;
+        transition: opacity .5s;
+    }
+    .mail-icon:hover {
+        opacity: 0.4;
+    }
+    .mail-icon:active {
+        opacity: 1;
+        -webkit-transition: opacity 0s;
+        transition: opacity 0s;
+    }
+    .mail-icon.active + .mail-form {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+        height: 100px;
+    }
+    .mail-form {
+        padding: 0 20px;
+        text-align: center;
+        width: 320px;
+        height: 0;
+        margin: 0 auto 50px;
+        -webkit-transform: scale(0);
+        transform: scale(0);
+        -webkit-transition: transform .5s, height .5s;
+        transition: transform .5s, height .5s;
+    }
+    .mail-form input {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #cfcfcf;
+        border-radius: 3px;
+        padding: 5px 10px;
+        margin: 20px 0;
+        font: 15px Georgia, Arial, sans-serif;
+        outline: none;
+        -webkit-transition: border-color .5s;
+        transition: border-color .5s;
+    }
+    .mail-form input:hover, .mail-form input:focus {
+        border-color: #424242;
+    }
+    .mail-form button {
+        box-sizing: border-box;
+        border: 2px solid #cfcfcf;
+        background: none;
+        padding: 5px 10px;
+        outline: none;
+        border-radius: 5px;
+        color: #424242;
+        font: 15px Georgia, Arial, sans-serif;
+        -webkit-transition: border-color .5s;
+        transition: border-color .5s;
+    }
+    .mail-form button:hover, .mail-form button:active {
+        border-color: #424242;
+    }
+    .mail-form button:active {
+        background: #424242;
+        color: #fff;
     }
     @media (min-width:960px) {
         #text {
@@ -75,12 +148,36 @@
     <section id="text" contenteditable>
         <p>Напишите свое письмо...</p>
     </section>
+    <img id="mail-icon" class="mail-icon" src="img/mail.svg" alt="mail-icon"/>
+
+    <section id="mail-form" class="mail-form">
+        <form action="/">
+            <input type="email" placeholder="Кому? (email)"/>
+            <button>Отправить</button>
+        </form>
+    </section>
 </div>
 
 <script>
 
     var selectedElement = null;
     var textBlock = document.getElementById('text');
+
+    function toggleClass(el, className) {
+        if (el.classList) {
+            el.classList.toggle(className);
+        } else {
+            var classes = el.className.split(' ');
+            var existingIndex = classes.indexOf(className);
+
+            if (existingIndex >= 0)
+                classes.splice(existingIndex, 1);
+            else
+                classes.push(className);
+
+            el.className = classes.join(' ');
+        }
+    }
 
     function supportsLocalStorage() {
         try {
@@ -91,6 +188,7 @@
     }
 
     function setFocus() {
+
         if (selectedElement) {
             selectedElement.style.color = '';
         }
@@ -115,6 +213,12 @@
 
     textBlock.onkeyup = setFocus;
     textBlock.onmouseup = setFocus;
+
+    var mailIcon = document.getElementById('mail-icon');
+
+    mailIcon.onclick = function () {
+        toggleClass(this, 'active');
+    }
 
 </script>
 
